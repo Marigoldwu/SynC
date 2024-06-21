@@ -72,3 +72,27 @@ The code ocean capsule link: [Under review, will be released soon]()
 The results on eight datasets recorded in the `console output.txt`.
 
 > To reproduce our results, you can click the `Reproducible Run` button.
+>
+> Please note that the environment is slightly different from what is described in the article.  Even so, the results in our paper are easy to reproduce.
+
+The code ocean Dockerfile:
+
+```dockerfile
+# hash:sha256:fe8085911e8d9a8c9a97a82e9bff996f985a0243f467d1578c08a7a47bfa0654
+FROM registry.codeocean.com/codeocean/pytorch:2.1.0-cuda11.8.0-mambaforge23.1.0-4-python3.10.12-ubuntu22.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        unrar=1:6.1.5-1 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install -U --no-cache-dir \
+    matplotlib==3.7.5 \
+    munkres==1.1.4 \
+    numpy==1.24.1 \
+    scikit-learn==1.3.2 \
+    scipy==1.9.1
+```
+
