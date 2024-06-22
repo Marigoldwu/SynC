@@ -65,11 +65,11 @@ python main.py -P -M pretrain_tigae_for_sync -D acm -LS 1 -S 325
 | Wisconsin | 59.64±1.02 | 32.79±1.42 | 26.86±1.30 | 38.19±1.30 |
 | Texas     | 64.37±0.80 | 27.61±1.00 | 32.65±1.91 | 39.49±1.53 |
 
+The results on the eight datasets recorded in the `console output.txt`.
+
 ### The results reproduced by code ocean.
 
-The code ocean capsule link: [Under review, will be released soon]()
-
-The results on eight datasets recorded in the `console output.txt`.
+The code ocean capsule link: [https://codeocean.com/capsule/8085961/tree](https://codeocean.com/capsule/8085961/tree).
 
 > To reproduce our results, you can click the `Reproducible Run` button.
 >
