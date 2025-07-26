@@ -8,6 +8,8 @@ from utils.data_processor import normalize_adj_torch, similarity
 from utils.evaluation import eva
 from utils.result import Result
 from utils.utils import get_format_variables
+from utils.data_processor import add_random_edges_torch, aug_feature_dropout
+import numpy as np
 
 
 def train(args, data, logger):
@@ -26,13 +28,20 @@ def train(args, data, logger):
     args.pretrain_lr = params_dict[args.dataset_name][1]
     args.epsilon = params_dict[args.dataset_name][2]
     args.linear_dim = params_dict[args.dataset_name][3]
+    args.dropout_rate = 0.3
+
+
     pretrain_lgae_filename = args.pretrain_save_path + args.dataset_name + ".pkl"
 
     model = TIGAE(args.input_dim, args.hidden_dim, args.embedding_dim, args.linear_dim).to(args.device)
     optimizer = Adam(model.parameters(), lr=args.pretrain_lr)
     feature = data.feature.to(args.device).float()
+    # feature = aug_feature_dropout(feature, args.dropout_rate)
+    # np.save("../PyDGC-0.0.1/dataset/acm/acm_feat.npy", feature.cpu().numpy())
     sf = similarity(feature)
     adj_origin = data.adj.to(args.device).float()
+    # adj_origin = add_random_edges_torch(adj_origin, b=args.random_edge_rate)
+
     adj_norm = normalize_adj_torch(adj_origin).float()
     adj_label = adj_origin
     label = data.label

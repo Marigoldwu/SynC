@@ -8,7 +8,7 @@ from utils.data_processor import normalize_adj_torch, similarity, get_importance
 from utils.evaluation import eva
 from utils.result import Result
 from utils.utils import get_format_variables, count_parameters
-
+from utils.data_processor import add_random_edges_torch
 
 def train(args, data, logger):
     # parameters settings
@@ -27,6 +27,7 @@ def train(args, data, logger):
     args.lr = params_dict[args.dataset_name][1]
     args.linear_dim = params_dict[args.dataset_name][2]
     args.beta = params_dict[args.dataset_name][3]
+    args.random_edge_rate = 0.3
 
     # initialize model
     pretrain_tigae_filename = args.pretrain_save_path + args.dataset_name + ".pkl"
@@ -38,6 +39,9 @@ def train(args, data, logger):
     # load data
     feature = data.feature.to(args.device).float()
     adj_origin = data.adj.to(args.device).float()
+    # 保存原始图
+    torch.save(adj_origin, 'origin_adj.pt')
+    # adj_origin = add_random_edges_torch(adj_origin, b=args.random_edge_rate)
     label = data.label
     adj_norm = normalize_adj_torch(adj_origin)
 
@@ -56,7 +60,7 @@ def train(args, data, logger):
         with torch.no_grad():
             model.eval()
             A_pred, embedding1, xt1 = model.tigae(feature, adj_norm)
-            sx = similarity(xt1)
+            sx = similarity(xt1, distance="cosine")
             # Eq. 5
             A_p = (A_pred + sx) / 2
             # Eq. 6
@@ -83,6 +87,7 @@ def train(args, data, logger):
             A = torch.mul(tmp, A_label)
             del tmp, imp_origin, A_p, mask, mask_row
             A = normalize_adj_torch(A)
+            torch.save(A, "augmented.pt")
         
         # Structure Augmentation Promotes the Generation of High-quality Embeddings
         model.train()
